@@ -1,0 +1,51 @@
+// use to allow player to jump and move left and right 
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerController : MonoBehaviour
+{
+    public float speed = 5f;
+    public float jumpSpeed = 10f; // Changed value alter jump height
+    private float direction = 0f;
+    private Rigidbody2D player;
+    private bool isGrounded; // Change; created boolean value in order to check for ground, prevents infinite double jump
+    // this value is used throughout this code to ensure infinite jumping is not an issue
+
+    // Check for ground collision
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
+        }
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        player = GetComponent<Rigidbody2D>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        direction = Input.GetAxis("Horizontal");
+
+        player.velocity = new Vector2(direction * speed, player.velocity.y);
+
+        if (isGrounded && Input.GetButtonDown("Jump"))
+        {
+            player.velocity = new Vector2(player.velocity.x, jumpSpeed); // Jump with fixed speed
+        }
+    }
+}
